@@ -5,6 +5,7 @@ import com.bobocode.util.ExerciseNotCompletedException;
 import java.util.List;
 import java.util.Map;
 import java.util.function.IntConsumer;
+import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 
 /**
@@ -30,7 +31,7 @@ public class PrimeNumbers {
      * @return an infinite int stream of prime numbers
      */
     public static IntStream stream() {
-        throw new ExerciseNotCompletedException(); // todo: create an infinite stream of ints, then filter prime numbs
+        return IntStream.iterate(2, i -> i + 1).filter(PrimeNumbers::isPrime); // todo: create an infinite stream of ints, then filter prime numbs
     }
 
     /**
@@ -40,7 +41,7 @@ public class PrimeNumbers {
      * @return an int stream of prime numbers with a specified size
      */
     public static IntStream stream(int size) {
-        throw new ExerciseNotCompletedException(); // todo: use the prev to generate a stream method but limit its size
+        return stream().limit(size); // todo: use the prev to generate a stream method but limit its size
     }
 
     /**
@@ -51,7 +52,7 @@ public class PrimeNumbers {
      * @return the sum of n prime numbers
      */
     public static int sum(int n) {
-        throw new ExerciseNotCompletedException(); // todo: use prev method and calculate the sum
+        return stream(n).sum(); // todo: use prev method and calculate the sum
 
     }
 
@@ -61,7 +62,7 @@ public class PrimeNumbers {
      * @return a list of collected prime numbers
      */
     public static List<Integer> list(int n) {
-        throw new ExerciseNotCompletedException(); // todo: collect prime numbers into the list
+        return stream(n).boxed().collect(Collectors.toList()); // todo: collect prime numbers into the list
     }
 
     /**
@@ -71,7 +72,7 @@ public class PrimeNumbers {
      * @param consumer a logic that should be applied to the found prime number
      */
     public static void processByIndex(int idx, IntConsumer consumer) {
-        throw new ExerciseNotCompletedException(); // todo: find an element in the stream by index and process it
+        stream(idx + 1).skip(idx).findFirst().ifPresent(consumer); // todo: find an element in the stream by index and process it
     }
 
     /**
@@ -85,6 +86,11 @@ public class PrimeNumbers {
      * @return a map with prime number grouped by the amount of digits
      */
     public static Map<Integer, List<Integer>> groupByAmountOfDigits(int n) {
-        throw new ExerciseNotCompletedException(); // todo: group n prime numbers by the amount of digits
+        return stream(n).boxed().collect(Collectors.groupingBy(x -> (int) (Math.log10(x) + 1))); // todo: group n prime numbers by the amount of digits
+    }
+
+    private static boolean isPrime(int n) {
+        return n > 1 && IntStream.rangeClosed(2, (int) Math.sqrt(n))
+                .noneMatch(divisor -> n % divisor == 0);
     }
 }
